@@ -19,10 +19,9 @@ const basedPadExampleUrl =
   "https://basedpad.fun/token/0xB200000000000000000000F71B4c6902d4b6Cdb6";
 
 const navItems = [
-  { label: "Signal", href: "#signal" },
-  { label: "Reward route", href: "#rewards" },
-  { label: "Ecosystem", href: "#ecosystem" },
-  { label: "Proof", href: "#proof" },
+  { label: "About", href: "#about" },
+  { label: "Staking", href: "#staking" },
+  { label: "BasedPad ecosystem", href: "#ecosystem" },
 ];
 
 const routeSteps = [
@@ -183,7 +182,7 @@ export default function Home() {
                 B20 designed for the AI-owned NFT launchpad and ecosystem ahead.
               </p>
               <div className="hero-actions">
-                <a className="button button--lime" href="#rewards">
+                <a className="button button--lime" href="#staking">
                   See the reward route <ArrowDownRight size={19} />
                 </a>
                 <a
@@ -224,7 +223,7 @@ export default function Home() {
           </div>
         </div>
 
-        <section className="intro-section section-shell">
+        <section className="intro-section section-shell" id="about">
           <div className="intro-index">[ 01 / THE SIGNAL ]</div>
           <div className="intro-copy">
             <Kicker>An avatar with an operating model</Kicker>
@@ -253,7 +252,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="rewards-section" id="rewards">
+        <section className="rewards-section" id="staking">
           <div className="rewards-head section-shell">
             <div>
               <Kicker>Mechanism, in plain language</Kicker>
