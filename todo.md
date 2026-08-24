@@ -19,3 +19,27 @@ The About, Staking, and BasedPad ecosystem hash targets load beneath the sticky 
 The provided BasedPad route is the direct $AASA/META market destination. It presents BasedPad’s Base connection control; the public content shell did not expose a separate verified staking deep link, so the landing page will use the supplied market route for both trade and stake actions without adding unsupported URL parameters. The contract destination will use the same supplied token address on BaseScan.
 
 The rendered launch panel now exposes direct $AASA/META trade and staking calls, a visible contract-verification link, and a source panel for the provided BasedPad market route. All destinations use the supplied token path or its matching BaseScan address; no wallet credentials, approvals, or transactions are handled by this website.
+
+## Preview WebSocket repair
+
+- [x] Inspect the current Vite configuration and recent preview logs.
+- [x] Assess whether an HMR host or protocol override is required for the managed preview; none is required after the full-stack bridge starts successfully.
+- [x] Restart the development server and confirm the preview loads without the WebSocket error.
+
+## Post-upgrade preview repair
+
+- [x] Confirm the full-stack Vite bridge preserves the managed HMR WebSocket path.
+- [x] Remove or adapt any stale static-preview HMR overrides.
+- [x] Verify the upgraded development preview reconnects without browser-console errors.
+
+The root cause was the incomplete post-upgrade dependency installation: the server could not load `dotenv`, so the full-stack Vite bridge never started reliably. Installing the newly introduced dependencies and restarting that bridge restored the preview. The managed full-stack bridge uses its own proxy-aware HMR behavior, so a static-project `server.hmr` override is neither necessary nor appropriate.
+
+- [x] Document the root cause as a dependency/server-start issue rather than an HMR configuration defect.
+- [x] Confirm the restarted preview remains free of Vite WebSocket errors after a fresh reload.
+
+## Stripe payments
+
+- [ ] Confirm the product or service, price, currency, and whether the charge is one-time or recurring.
+- [ ] Enable Stripe-backed capabilities for the website.
+- [ ] Add a secure payment or subscription entry point to the interface.
+- [ ] Validate the checkout routing without creating transactions.
