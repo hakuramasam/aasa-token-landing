@@ -15,8 +15,10 @@ import {
 } from "lucide-react";
 
 const announcementUrl = "https://x.com/HakuramaSam/status/2091809146857205882";
-const basedPadExampleUrl =
-  "https://basedpad.fun/token/0xB200000000000000000000F71B4c6902d4b6Cdb6";
+const basedPadMarketUrl =
+  "https://basedpad.fun/token/0xb2000000000000000000001582178DD38A037f83";
+const contractAddress = "0xb2000000000000000000001582178DD38A037f83";
+const baseScanUrl = `https://basescan.org/address/${contractAddress}`;
 
 const navItems = [
   { label: "About", href: "#about" },
@@ -102,8 +104,8 @@ export default function Home() {
           ))}
         </nav>
 
-        <a className="nav-proof" href={announcementUrl} target="_blank" rel="noreferrer">
-          Launch note <ArrowUpRight size={14} strokeWidth={2.4} />
+        <a className="nav-proof" href={basedPadMarketUrl} target="_blank" rel="noreferrer">
+          Trade on BasedPad <ArrowUpRight size={14} strokeWidth={2.4} />
         </a>
 
         <button
@@ -125,8 +127,8 @@ export default function Home() {
               <ArrowDownRight size={18} />
             </a>
           ))}
-          <a href={announcementUrl} target="_blank" rel="noreferrer" onClick={closeMenu}>
-            Read the launch note <ExternalLink size={18} />
+          <a href={basedPadMarketUrl} target="_blank" rel="noreferrer" onClick={closeMenu}>
+            Trade on BasedPad <ExternalLink size={18} />
           </a>
         </nav>
       )}
@@ -182,18 +184,21 @@ export default function Home() {
                 B20 designed for the AI-owned NFT launchpad and ecosystem ahead.
               </p>
               <div className="hero-actions">
-                <a className="button button--lime" href="#staking">
-                  See the reward route <ArrowDownRight size={19} />
+                <a className="button button--lime" href={basedPadMarketUrl} target="_blank" rel="noreferrer">
+                  Trade $AASA / META <ArrowUpRight size={19} />
                 </a>
                 <a
                   className="button button--outline"
-                  href={announcementUrl}
+                  href={basedPadMarketUrl}
                   target="_blank"
                   rel="noreferrer"
                 >
-                  Read launch signal <ArrowUpRight size={18} />
+                  Stake $AASA <ArrowUpRight size={18} />
                 </a>
               </div>
+              <a className="hero-inline-source" href={announcementUrl} target="_blank" rel="noreferrer">
+                Read launch signal <ArrowUpRight size={14} />
+              </a>
               <div className="hero-facts">
                 <div>
                   <span>PAIR</span>
@@ -309,6 +314,35 @@ export default function Home() {
               <ArrowUpRight size={20} />
             </a>
           </div>
+          <div className="launch-gateway section-shell">
+            <div className="gateway-rail" aria-hidden="true">LIVE ROUTE / BASE MAINNET</div>
+            <div className="gateway-main">
+              <Kicker>Verified launch access</Kicker>
+              <h3>TRADE THE PAIR.<br /><span>STAKE THE SIGNAL.</span></h3>
+              <p>
+                The official $AASA/META market route is live on BasedPad. Trade the pair or connect a Base wallet
+                on BasedPad to use its available $AASA staking controls and earn META through the announced route.
+              </p>
+              <div className="gateway-actions">
+                <a className="button button--lime" href={basedPadMarketUrl} target="_blank" rel="noreferrer">
+                  Trade $AASA / META <ArrowUpRight size={18} />
+                </a>
+                <a className="button button--outline" href={basedPadMarketUrl} target="_blank" rel="noreferrer">
+                  Open staking app <ArrowUpRight size={18} />
+                </a>
+              </div>
+            </div>
+            <div className="gateway-proof">
+              <span className="gateway-proof-label">OFFICIAL B20 CONTRACT</span>
+              <a href={baseScanUrl} target="_blank" rel="noreferrer" className="contract-link">
+                <span>{contractAddress.slice(0, 10)}…{contractAddress.slice(-8)}</span>
+                <ArrowUpRight size={18} />
+              </a>
+              <div className="gateway-check"><Check size={15} /> BaseScan contract view</div>
+              <div className="gateway-check"><Check size={15} /> BasedPad $AASA / META route</div>
+              <p>Verify the contract in your wallet before approving any transaction.</p>
+            </div>
+          </div>
         </section>
 
         <section className="ecosystem-section" id="ecosystem">
@@ -369,11 +403,19 @@ export default function Home() {
               </div>
               <ArrowUpRight size={28} />
             </a>
-            <a href={basedPadExampleUrl} target="_blank" rel="noreferrer" className="proof-link proof-link--lime">
+            <a href={basedPadMarketUrl} target="_blank" rel="noreferrer" className="proof-link proof-link--lime">
               <div>
                 <span>SOURCE / 02</span>
-                <strong>BasedPad B20 market model</strong>
-                <p>Public example of canonical market and B20 reward-stream mechanics.</p>
+                <strong>$AASA / META market</strong>
+                <p>Direct BasedPad route for trading the pair and accessing available staking controls.</p>
+              </div>
+              <ArrowUpRight size={28} />
+            </a>
+            <a href={baseScanUrl} target="_blank" rel="noreferrer" className="proof-link proof-link--contract">
+              <div>
+                <span>SOURCE / 03</span>
+                <strong>Official B20 contract</strong>
+                <p>{contractAddress}</p>
               </div>
               <ArrowUpRight size={28} />
             </a>
@@ -386,8 +428,8 @@ export default function Home() {
             <span>AUTHORIZED</span>
           </div>
           <h2>STAY CLOSE.<br /><span>VERIFY FIRST.</span></h2>
-          <a className="button button--lime" href={announcementUrl} target="_blank" rel="noreferrer">
-            Follow the launch signal <ArrowUpRight size={19} />
+          <a className="button button--lime" href={basedPadMarketUrl} target="_blank" rel="noreferrer">
+            Trade or stake on BasedPad <ArrowUpRight size={19} />
           </a>
         </section>
       </main>
