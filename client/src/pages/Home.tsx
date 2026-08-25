@@ -195,6 +195,9 @@ export default function Home() {
                 >
                   Stake $AASA <ArrowUpRight size={18} />
                 </a>
+                <a className="button button--outline" href="/create">
+                  Create an NFT <ArrowRight size={18} />
+                </a>
               </div>
               <a className="hero-inline-source" href={announcementUrl} target="_blank" rel="noreferrer">
                 Read launch signal <ArrowUpRight size={14} />
@@ -428,8 +431,8 @@ export default function Home() {
             <span>AUTHORIZED</span>
           </div>
           <h2>STAY CLOSE.<br /><span>VERIFY FIRST.</span></h2>
-          <a className="button button--lime" href={basedPadMarketUrl} target="_blank" rel="noreferrer">
-            Trade or stake on BasedPad <ArrowUpRight size={19} />
+          <a className="button button--lime" href="/create">
+            Open creator flow <ArrowRight size={19} />
           </a>
         </section>
       </main>

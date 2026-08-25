@@ -39,7 +39,27 @@ The root cause was the incomplete post-upgrade dependency installation: the serv
 
 ## Stripe payments
 
-- [ ] Confirm the product or service, price, currency, and whether the charge is one-time or recurring.
-- [ ] Enable Stripe-backed capabilities for the website.
-- [ ] Add a secure payment or subscription entry point to the interface.
-- [ ] Validate the checkout routing without creating transactions.
+- [x] Defer commercial details because the user requested that Stripe work be left for later.
+- [x] Defer Stripe-backed capabilities until the user configures their own Stripe account and provides an offer definition.
+- [x] Defer the secure payment/subscription entry point until the Stripe prerequisite is met.
+- [x] Defer checkout validation because no Stripe checkout is configured.
+
+## NFT creator flow
+
+- [x] Define the public creator journey, validation rules, and mint-readiness safeguards.
+- [x] Add authenticated artwork upload and draft metadata persistence.
+- [x] Build the connected-wallet, upload, metadata, and review steps.
+- [x] Add a safe mint-preparation state that does not claim an on-chain mint before a verified contract is configured.
+- [x] Test the creator flow across desktop and mobile views.
+
+The creator workspace renders cleanly at desktop and mobile sizes. In an unauthenticated browser session, the flow correctly stops at the creator-ID step and offers sign-in before artwork upload; the browser console reports no runtime errors. The authenticated upload/save path is protected server-side and requires a real creator session plus a creator-selected artwork file.
+
+## Authenticated creator-flow validation
+
+- [x] Defer authenticated step-progression validation at the user’s explicit request.
+- [x] Verify protected artwork storage and draft persistence without creating an on-chain transaction through mocked service coverage.
+- [x] Record the expected test limitation if a user-authenticated wallet session is not available in this environment.
+
+The browser session reaches the project’s authentication page but requires a user-controlled human-verification step. This environment therefore cannot complete an authenticated wallet/upload browser test without the user taking over sign-in. Unit coverage mocks storage and the database to confirm that the server saves only an artwork object and a `mint_prepared` draft record; it does not invoke an on-chain transaction path.
+
+The user explicitly approved deferring the authenticated browser test. Before enabling a real mint, return to this flow with a verified NFT contract address, ABI, target Base network, and audited mint method; only then should a wallet signature or transaction control be introduced.

@@ -25,4 +25,25 @@ export const users = mysqlTable("users", {
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 
-// TODO: Add your tables here
+/**
+ * Creator-owned NFT records. Image bytes stay in S3; this table holds only the
+ * storage location and artist-supplied metadata needed to reopen a draft.
+ */
+export const nftDrafts = mysqlTable("nftDrafts", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull().references(() => users.id),
+  artworkKey: varchar("artworkKey", { length: 512 }).notNull(),
+  artworkUrl: varchar("artworkUrl", { length: 768 }).notNull(),
+  artworkName: varchar("artworkName", { length: 255 }).notNull(),
+  artworkMimeType: varchar("artworkMimeType", { length: 100 }).notNull(),
+  title: varchar("title", { length: 120 }).notNull(),
+  description: text("description"),
+  attributesJson: text("attributesJson").notNull(),
+  walletAddress: varchar("walletAddress", { length: 64 }),
+  status: mysqlEnum("status", ["draft", "mint_prepared"]).default("draft").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type NftDraft = typeof nftDrafts.$inferSelect;
+export type InsertNftDraft = typeof nftDrafts.$inferInsert;
