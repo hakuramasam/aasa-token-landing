@@ -63,3 +63,22 @@ The creator workspace renders cleanly at desktop and mobile sizes. In an unauthe
 The browser session reaches the project’s authentication page but requires a user-controlled human-verification step. This environment therefore cannot complete an authenticated wallet/upload browser test without the user taking over sign-in. Unit coverage mocks storage and the database to confirm that the server saves only an artwork object and a `mint_prepared` draft record; it does not invoke an on-chain transaction path.
 
 The user explicitly approved deferring the authenticated browser test. Before enabling a real mint, return to this flow with a verified NFT contract address, ABI, target Base network, and audited mint method; only then should a wallet signature or transaction control be introduced.
+
+## thirdweb MCP connection
+
+- [x] Check whether an existing thirdweb connector already covers the requested MCP endpoint.
+- [x] Avoid submitting a duplicate thirdweb connection because the existing `thirdweb API` connector is enabled and already provides the MCP capability.
+- [x] Verify available MCP tools through the existing enabled connector.
+
+The official thirdweb MCP documentation uses a `secretKey` query parameter, but connector review cards display server URLs. To avoid exposing the supplied secret through the visible connector URL, this integration needs a thirdweb-supported header-based or OAuth authentication alternative before it can be safely submitted.
+
+- [x] Recheck thirdweb’s current MCP documentation and connector availability for a secure authentication path.
+
+The current task already has an enabled `thirdweb API` MCP connector. Its tool list loads successfully with 53 capabilities, including read-only contract and wallet queries as well as sensitive transaction, deployment, signing, payment, and bridge operations. The user-supplied query-string configuration was not added because it would duplicate the existing connection and expose a secret in a visible endpoint.
+
+## Public wallet connection component
+
+- [x] Define Base-aware connection states, unsupported-network handling, and the no-signature/no-transaction boundary.
+- [x] Create a reusable browser-wallet connection component for the NFT creator flow.
+- [x] Replace the inline creator wallet logic with the reusable component.
+- [x] Validate connected, unavailable-wallet, and Base-network states through deterministic unit coverage and responsive component styles.

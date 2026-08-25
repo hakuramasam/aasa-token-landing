@@ -1,28 +1,18 @@
 import { startLogin } from "@/const";
 import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/_core/hooks/useAuth";
-import { ArrowLeft, ArrowRight, Check, ImagePlus, Loader2, LockKeyhole, Plus, Trash2, Wallet } from "lucide-react";
+import { WalletConnection } from "@/components/WalletConnection";
+import { shortenWalletAddress } from "@/lib/walletNetwork";
+import { ArrowLeft, ArrowRight, Check, ImagePlus, Loader2, LockKeyhole, Plus, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import "./CreateNft.css";
-
-declare global {
-  interface Window {
-    ethereum?: {
-      request: (args: { method: string }) => Promise<unknown>;
-    };
-  }
-}
 
 type Attribute = { traitType: string; value: string };
 
 const steps = ["Connect", "Artwork", "Metadata", "Wallet", "Review", "Mint prep"];
 const acceptedTypes = ["image/png", "image/jpeg", "image/gif", "image/webp"] as const;
 type AcceptedMimeType = (typeof acceptedTypes)[number];
-
-function shortenAddress(address: string) {
-  return `${address.slice(0, 6)}…${address.slice(-4)}`;
-}
 
 export default function CreateNft() {
   const { isAuthenticated, loading, user } = useAuth();
@@ -49,24 +39,6 @@ export default function CreateNft() {
     if (step === 3) return Boolean(walletAddress);
     return true;
   }, [artwork, isAuthenticated, step, title, walletAddress]);
-
-  async function connectWallet() {
-    if (!window.ethereum) {
-      toast.error("No browser wallet detected. Install or unlock a Base-compatible wallet first.");
-      return;
-    }
-    try {
-      const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
-      const address = Array.isArray(accounts) ? accounts[0] : undefined;
-      if (typeof address !== "string" || !/^0x[a-fA-F0-9]{40}$/.test(address)) {
-        throw new Error("No compatible account returned");
-      }
-      setWalletAddress(address);
-      toast.success(`Wallet connected: ${shortenAddress(address)}`);
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Wallet connection was not approved");
-    }
-  }
 
   function handleArtwork(file?: File) {
     if (!file) return;
@@ -208,13 +180,8 @@ export default function CreateNft() {
               <div className="creator-step">
                 <div className="step-label">STEP 04 / WALLET</div>
                 <h2>CONNECT THE<br /><span>CREATOR</span> WALLET.</h2>
-                <p>Connect a Base-compatible browser wallet to associate this draft with its intended recipient. This step does not ask for a signature or submit a transaction.</p>
-                <div className="wallet-card">
-                  <div className="wallet-symbol"><Wallet size={25} /></div>
-                  <div><strong>{walletAddress ? shortenAddress(walletAddress) : "No wallet connected"}</strong><span>{walletAddress ? "Recipient address captured for draft review." : "Use the wallet you intend to mint to."}</span></div>
-                  <button type="button" className="creator-button creator-button--outline" onClick={connectWallet}>{walletAddress ? "Change wallet" : "Connect wallet"}</button>
-                </div>
-                <div className="security-line"><Check size={15} /> We will never request your recovery phrase or private key.</div>
+                <p>Connect a Base-compatible browser wallet to associate this draft with its intended recipient. This component only connects an address and can request a Base network switch; it never requests a signature or transaction.</p>
+                <WalletConnection walletAddress={walletAddress} onWalletAddressChange={setWalletAddress} />
               </div>
             )}
 
@@ -225,7 +192,7 @@ export default function CreateNft() {
                 <p>This is your final check before saving the creator record. No on-chain mint will be requested because the official NFT contract has not been configured.</p>
                 <div className="review-grid">
                   <div className="review-art">{artwork && <img src={artwork.dataUrl} alt="NFT artwork review" />}</div>
-                  <div className="review-copy"><span>COLLECTION</span><strong>$AASA / Creator drafts</strong><span>TITLE</span><strong>{title || "Untitled artifact"}</strong><span>RECIPIENT</span><strong>{walletAddress ? shortenAddress(walletAddress) : "Not connected"}</strong><span>ATTRIBUTES</span><strong>{attributes.filter((attribute) => attribute.traitType && attribute.value).length} traits</strong></div>
+                  <div className="review-copy"><span>COLLECTION</span><strong>$AASA / Creator drafts</strong><span>TITLE</span><strong>{title || "Untitled artifact"}</strong><span>RECIPIENT</span><strong>{walletAddress ? shortenWalletAddress(walletAddress) : "Not connected"}</strong><span>ATTRIBUTES</span><strong>{attributes.filter((attribute) => attribute.traitType && attribute.value).length} traits</strong></div>
                 </div>
                 <button className="creator-button creator-button--volt" type="button" onClick={prepareDraft} disabled={saveDraft.isPending}>{saveDraft.isPending ? <><Loader2 size={18} className="spin" /> Saving draft</> : <>Prepare creator draft <ArrowRight size={18} /></>}</button>
               </div>
