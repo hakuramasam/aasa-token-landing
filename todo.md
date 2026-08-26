@@ -107,3 +107,11 @@ The validation confirms that $AASA is a native Base B20 asset and $BPAD is a ver
 - [x] Prepare a deployment-ready checklist that requires user confirmation before any on-chain vault creation.
 
 Flap’s official VaultBase specification supports BNB Chain (56), BNB Testnet (97), and Robinhood Chain (4663) and reverts on unsupported chains. Its developer documentation describes custom tax-revenue vault development, including a Flap Guardian role, rather than a ready-made Base project multisig. Combined with the live board’s BSC/Robinhood/XLayer/Monad/Morph network list, this rules it out for the $AASA Base treasury. The assessment and Base Safe configuration are recorded in `flap-vault-assessment.md`.
+
+## HISS platform assessment
+
+- [x] Verify whether HISS vaults can host the $AASA Base payment and reward treasury.
+- [x] Document the compatible HISS role, if any, without enabling an order, trade, or vault deployment.
+- [x] Confirm the recommended Base-native governance platform for the $AASA treasury.
+
+HISS vaults are restricted to Robinhood Chain and canonical USDG; Base is a payment-settlement lane rather than a HISS vault chain. The live HISS status confirms its own Robinhood Chain vault infrastructure, but it does not make HISS a $AASA Base treasury platform. `hiss-vault-assessment.md` records the chain separation and confirms two Base Safe accounts as the appropriate governance foundation.
