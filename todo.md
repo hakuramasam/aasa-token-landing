@@ -82,3 +82,28 @@ The current task already has an enabled `thirdweb API` MCP connector. Its tool l
 - [x] Create a reusable browser-wallet connection component for the NFT creator flow.
 - [x] Replace the inline creator wallet logic with the reusable component.
 - [x] Validate connected, unavailable-wallet, and Base-network states through deterministic unit coverage and responsive component styles.
+
+## $AASA NFT payments and reward routing
+
+- [ ] Define the $AASA NFT creation fee policy, including the 10,000–1,000,000 $AASA range and transparent performance-based criteria.
+- [x] Select an approval-gated treasury and reward-token acquisition model that does not grant the website unilateral access to project funds.
+- [ ] Specify the payment confirmation, reward-token budget, and NFT staking reward-flow records required for launch.
+- [ ] Build non-custodial payment and reward-routing preparation interfaces only after the operating model is approved.
+- [ ] Validate all draft payment and reward actions without converting, buying, approving, or transferring live assets.
+
+The selected model requires a verified $AASA payment into a project-controlled payment path, records a per-NFT reward budget, and produces an explicit treasury action for project multisig approval. Conversion from $AASA to ETH and purchase of any reward token remain separate, human-approved treasury operations; the website must not hold signing keys or auto-execute swaps.
+
+- [x] Validate the supplied $AASA and $BPAD Base token inputs and document the stock-token allowlist requirement.
+- [ ] Define a risk-controlled $AASA fee and treasury policy once the reward-token inputs are available.
+
+The supplied initial reward-token set is $BPAD (`0xf5F11BC9Be9D6690f795D04d2fc9bdd097008a2B`), $AASA (`0xb2000000000000000000001582178DD38A037f83`), and an allowlist of official stock tokens such as NVDA, SPY, COIN, META, MSFT, GOOGL, AAPL, and HOOD. The requested initial reward budget is 20% of a paid NFT creation fee, reserved for monthly collector-staking rewards. Additional stock tokens must be explicitly approved with a Base contract address before they enter the allowlist.
+
+The validation confirms that $AASA is a native Base B20 asset and $BPAD is a verified Base ERC-20. Stock-token tickers remain unapproved until the user supplies exact Base addresses and their issuer/source can be checked.
+
+## Flap Vault assessment
+
+- [x] Verify Flap Vault’s published Base support and governance model through its Vault specification and vault-developer documentation.
+- [x] Define the $AASA Treasury and $AASA Rewards vault configuration without deploying or funding either vault.
+- [x] Prepare a deployment-ready checklist that requires user confirmation before any on-chain vault creation.
+
+Flap’s official VaultBase specification supports BNB Chain (56), BNB Testnet (97), and Robinhood Chain (4663) and reverts on unsupported chains. Its developer documentation describes custom tax-revenue vault development, including a Flap Guardian role, rather than a ready-made Base project multisig. Combined with the live board’s BSC/Robinhood/XLayer/Monad/Morph network list, this rules it out for the $AASA Base treasury. The assessment and Base Safe configuration are recorded in `flap-vault-assessment.md`.
