@@ -85,16 +85,16 @@ The current task already has an enabled `thirdweb API` MCP connector. Its tool l
 
 ## $AASA NFT payments and reward routing
 
-- [ ] Define the $AASA NFT creation fee policy, including the 10,000–1,000,000 $AASA range and transparent performance-based criteria.
+- [x] Define the $AASA NFT creation fee policy, including the 10,000–1,000,000 $AASA range and transparent performance-based criteria.
 - [x] Select an approval-gated treasury and reward-token acquisition model that does not grant the website unilateral access to project funds.
-- [ ] Specify the payment confirmation, reward-token budget, and NFT staking reward-flow records required for launch.
-- [ ] Build non-custodial payment and reward-routing preparation interfaces only after the operating model is approved.
-- [ ] Validate all draft payment and reward actions without converting, buying, approving, or transferring live assets.
+- [x] Specify the preparation-only payment reference, reward-token budget, and NFT staking reward-flow records required for launch.
+- [x] Build non-custodial payment and reward-routing preparation interfaces after the operating model was approved.
+- [x] Validate all draft payment and reward actions without converting, buying, approving, or transferring live assets.
 
 The selected model requires a verified $AASA payment into a project-controlled payment path, records a per-NFT reward budget, and produces an explicit treasury action for project multisig approval. Conversion from $AASA to ETH and purchase of any reward token remain separate, human-approved treasury operations; the website must not hold signing keys or auto-execute swaps.
 
 - [x] Validate the supplied $AASA and $BPAD Base token inputs and document the stock-token allowlist requirement.
-- [ ] Define a risk-controlled $AASA fee and treasury policy once the reward-token inputs are available.
+- [x] Define a risk-controlled $AASA fee and treasury policy from the validated $AASA and $BPAD inputs.
 
 The supplied initial reward-token set is $BPAD (`0xf5F11BC9Be9D6690f795D04d2fc9bdd097008a2B`), $AASA (`0xb2000000000000000000001582178DD38A037f83`), and an allowlist of official stock tokens such as NVDA, SPY, COIN, META, MSFT, GOOGL, AAPL, and HOOD. The requested initial reward budget is 20% of a paid NFT creation fee, reserved for monthly collector-staking rewards. Additional stock tokens must be explicitly approved with a Base contract address before they enter the allowlist.
 
@@ -115,3 +115,21 @@ Flap’s official VaultBase specification supports BNB Chain (56), BNB Testnet (
 - [x] Confirm the recommended Base-native governance platform for the $AASA treasury.
 
 HISS vaults are restricted to Robinhood Chain and canonical USDG; Base is a payment-settlement lane rather than a HISS vault chain. The live HISS status confirms its own Robinhood Chain vault infrastructure, but it does not make HISS a $AASA Base treasury platform. `hiss-vault-assessment.md` records the chain separation and confirms two Base Safe accounts as the appropriate governance foundation.
+
+## $AASA payment preparation interface
+
+- [x] Define the creator-facing fee tier, payment-order, 20% reward-reserve, and approval-record fields.
+- [x] Add a draft-only payment and monthly reward plan to the NFT creator review workflow.
+- [x] Ensure the interface cannot request an approval, transfer, swap, purchase, or staking transaction.
+- [x] Validate the payment-preparation interface across desktop and mobile views.
+
+The `nftPaymentPlans` migration is applied and verified with preparation-only payment and treasury-action defaults. Server-derived fee tiers persist the 20% monthly $BPAD reward reserve alongside a unique order reference; the client cannot supply custom fee or reserve values. Type-checking, the production build, and all 8 unit tests pass. Source scanning found no transaction, approval, swap, purchase, or staking execution calls, and the creator route renders cleanly at desktop and mobile sizes.
+
+## Payment policy completion
+
+- [x] Define and persist a measurable programme-rating criteria model for each $AASA fee tier without using market-price performance.
+- [x] Add preparation-only payment reconciliation and monthly reward-epoch records for future memo, settlement-proof, snapshot, and distribution metadata.
+- [x] Persist treasury guardrails for vault setup, 2-of-3 approval, monthly cadence, 2% slippage cap, proposal expiry, and the verified $BPAD allowlist.
+- [x] Extend automated tests and validate the revised preparation-only workflow without exposing any live transaction action.
+
+The second migration is applied and verified: every payment plan now records the policy version, criteria snapshot, unique payment memo placeholder, settlement-proof placeholder, and fixed Safe guardrails, while every plan creates a monthly reward-epoch preparation record. Type-checking, the production build, and all 8 unit tests pass. The updated source remains free of transaction, approval, swap, purchase, and staking execution calls, and the creator route renders cleanly on desktop and mobile.

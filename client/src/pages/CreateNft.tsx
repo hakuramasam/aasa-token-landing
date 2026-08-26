@@ -9,6 +9,30 @@ import { toast } from "sonner";
 import "./CreateNft.css";
 
 type Attribute = { traitType: string; value: string };
+type PaymentTier = "standard" | "curated" | "staking_ready" | "ecosystem" | "protocol_partner";
+type PaymentPlan = {
+  paymentOrderId: string;
+  feeTier: PaymentTier;
+  feeAasa: string;
+  rewardReserveAasa: string;
+  rewardAllocationBps: number;
+  rewardCadence: "monthly";
+  rewardTokenSymbol: string;
+  paymentMemo: string;
+  policyVersion: string;
+  criteria: string[];
+  epochKey: string;
+  guardrails: { approvalThreshold: number; approvalSignerCount: number; approvalCadence: "monthly"; proposalExpiryHours: number; maxSlippageBps: number };
+  treasuryActionStatus: "treasury_setup_required";
+};
+
+const paymentTiers: Array<{ id: PaymentTier; label: string; fee: string; reserve: string; note: string }> = [
+  { id: "standard", label: "R1 / Standard", fee: "10,000", reserve: "2,000", note: "Creator metadata and identity complete." },
+  { id: "curated", label: "R2 / Curated", fee: "25,000", reserve: "5,000", note: "Approved collection with one allowlisted reward token." },
+  { id: "staking_ready", label: "R3 / Staking-ready", fee: "100,000", reserve: "20,000", note: "Published eligibility and monthly distribution rules." },
+  { id: "ecosystem", label: "R4 / Ecosystem", fee: "500,000", reserve: "100,000", note: "Approved ecosystem integration and disclosed budget." },
+  { id: "protocol_partner", label: "R5 / Protocol partner", fee: "1,000,000", reserve: "200,000", note: "Multisig-approved programme with security review." },
+];
 
 const steps = ["Connect", "Artwork", "Metadata", "Wallet", "Review", "Mint prep"];
 const acceptedTypes = ["image/png", "image/jpeg", "image/gif", "image/webp"] as const;
@@ -22,10 +46,13 @@ export default function CreateNft() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [attributes, setAttributes] = useState<Attribute[]>([{ traitType: "Signal", value: "Authorized" }]);
+  const [paymentTier, setPaymentTier] = useState<PaymentTier>("standard");
+  const [savedPaymentPlan, setSavedPaymentPlan] = useState<PaymentPlan | null>(null);
   const [savedDraftUrl, setSavedDraftUrl] = useState("");
   const saveDraft = trpc.nft.saveDraft.useMutation({
     onSuccess: (data) => {
       setSavedDraftUrl(data.artworkUrl);
+      setSavedPaymentPlan(data.paymentPlan);
       setStep(5);
       toast.success("Creator draft saved securely");
     },
@@ -92,6 +119,7 @@ export default function CreateNft() {
       description: description.trim() || undefined,
       attributes: completedAttributes,
       walletAddress,
+      paymentTier,
     });
   }
 
@@ -194,16 +222,32 @@ export default function CreateNft() {
                   <div className="review-art">{artwork && <img src={artwork.dataUrl} alt="NFT artwork review" />}</div>
                   <div className="review-copy"><span>COLLECTION</span><strong>$AASA / Creator drafts</strong><span>TITLE</span><strong>{title || "Untitled artifact"}</strong><span>RECIPIENT</span><strong>{walletAddress ? shortenWalletAddress(walletAddress) : "Not connected"}</strong><span>ATTRIBUTES</span><strong>{attributes.filter((attribute) => attribute.traitType && attribute.value).length} traits</strong></div>
                 </div>
-                <button className="creator-button creator-button--volt" type="button" onClick={prepareDraft} disabled={saveDraft.isPending}>{saveDraft.isPending ? <><Loader2 size={18} className="spin" /> Saving draft</> : <>Prepare creator draft <ArrowRight size={18} /></>}</button>
+                <div className="payment-plan" aria-label="Draft-only $AASA payment and reward plan">
+                  <div className="payment-plan__topline"><span>PAYMENT PREPARATION</span><span>NO TRANSFER / NO SWAP</span></div>
+                  <div className="payment-tier-select">
+                    <label htmlFor="payment-tier">Programme rating</label>
+                    <select id="payment-tier" value={paymentTier} onChange={(event) => setPaymentTier(event.target.value as PaymentTier)}>
+                      {paymentTiers.map((tier) => <option key={tier.id} value={tier.id}>{tier.label} — {tier.fee} $AASA</option>)}
+                    </select>
+                  </div>
+                  {(() => {
+                    const selectedTier = paymentTiers.find((tier) => tier.id === paymentTier) ?? paymentTiers[0];
+                    return <><p>{selectedTier.note}</p><div className="payment-plan__grid"><div><span>CREATION FEE</span><strong>{selectedTier.fee} $AASA</strong></div><div><span>MONTHLY REWARD RESERVE</span><strong>{selectedTier.reserve} $AASA <i>20%</i></strong></div><div><span>INITIAL REWARD TOKEN</span><strong>$BPAD <i>100% of reserve</i></strong></div><div><span>TREASURY ACTION</span><strong>SETUP REQUIRED <i>2-of-3 Safe</i></strong></div></div></>;
+                  })()}
+                  <div className="payment-plan__rules"><span>POLICY v1</span><span>2/3 SAFE</span><span>72H EXPIRY</span><span>MAX 2% SLIPPAGE</span><span>MONTHLY EPOCH</span></div>
+                  <div className="payment-plan__safety"><LockKeyhole size={15} /> This records a preparation-only plan. No token approval, payment, swap, purchase, or staking transaction is available here.</div>
+                </div>
+                <button className="creator-button creator-button--volt" type="button" onClick={prepareDraft} disabled={saveDraft.isPending}>{saveDraft.isPending ? <><Loader2 size={18} className="spin" /> Saving plan</> : <>Prepare creator + payment plan <ArrowRight size={18} /></>}</button>
               </div>
             )}
 
             {step === 5 && (
               <div className="creator-step mint-hold">
-                <div className="step-label">STEP 06 / MINT PREPARATION</div>
-                <h2>DRAFT SECURED.<br /><span>CONTRACT</span> PENDING.</h2>
-                <p>Your creator record is saved. A verified NFT contract address, ABI, chain, and mint method are required before this workspace can request a signature or submit an on-chain transaction.</p>
-                <div className="mint-hold-card"><Check size={20} /><div><strong>Creator draft saved</strong><span>{savedDraftUrl ? "Artwork is secured in project storage and ready for the verified mint stage." : "Your draft will appear here after it has been saved."}</span></div></div>
+                <div className="step-label">STEP 06 / MINT & PAYMENT PREPARATION</div>
+                <h2>DRAFT SECURED.<br /><span>TREASURY</span> PENDING.</h2>
+                <p>Your creator record and payment plan are saved. A verified NFT contract, two configured Base Safe accounts, and an audited payment path are required before any signature, payment, or transaction can be requested.</p>
+                <div className="mint-hold-card"><Check size={20} /><div><strong>Creator plan saved</strong><span>{savedDraftUrl && savedPaymentPlan ? `${savedPaymentPlan.feeAasa} $AASA is recorded as a ${savedPaymentPlan.feeTier.replaceAll("_", " ")} preparation tier with a ${savedPaymentPlan.rewardReserveAasa} $AASA monthly $BPAD reward reserve. ${savedPaymentPlan.criteria.length} programme checks and the ${savedPaymentPlan.epochKey} reward epoch are recorded; treasury setup remains required.` : "Your draft will appear here after it has been saved."}</span></div></div>
+                {savedPaymentPlan && <div className="prepared-record"><span>PAYMENT MEMO / DRAFT ONLY</span><strong>{savedPaymentPlan.paymentMemo}</strong><p>Policy {savedPaymentPlan.policyVersion} · 2-of-3 approval · {savedPaymentPlan.guardrails.maxSlippageBps} bps maximum slippage · {savedPaymentPlan.guardrails.proposalExpiryHours} hour proposal expiry.</p></div>}
                 <a className="creator-button creator-button--outline" href="/create">Create another draft <ArrowRight size={18} /></a>
               </div>
             )}

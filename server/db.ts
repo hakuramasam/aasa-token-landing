@@ -1,6 +1,6 @@
 import { desc, eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertNftDraft, InsertUser, nftDrafts, users } from "../drizzle/schema";
+import { InsertNftDraft, InsertNftPaymentPlan, InsertNftRewardEpoch, InsertUser, nftDrafts, nftPaymentPlans, nftRewardEpochs, users } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -92,7 +92,21 @@ export async function getUserByOpenId(openId: string) {
 export async function createNftDraft(draft: InsertNftDraft) {
   const db = await getDb();
   if (!db) throw new Error("Database is unavailable");
-  await db.insert(nftDrafts).values(draft);
+  const result = await db.insert(nftDrafts).values(draft);
+  return Number(result[0].insertId);
+}
+
+export async function createNftPaymentPlan(plan: InsertNftPaymentPlan) {
+  const db = await getDb();
+  if (!db) throw new Error("Database is unavailable");
+  const result = await db.insert(nftPaymentPlans).values(plan);
+  return Number(result[0].insertId);
+}
+
+export async function createNftRewardEpoch(epoch: InsertNftRewardEpoch) {
+  const db = await getDb();
+  if (!db) throw new Error("Database is unavailable");
+  await db.insert(nftRewardEpochs).values(epoch);
 }
 
 export async function listNftDraftsForUser(userId: number) {

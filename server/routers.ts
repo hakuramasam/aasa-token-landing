@@ -3,7 +3,7 @@ import { z } from "zod";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
-import { ALLOWED_ARTWORK_TYPES, getNftDrafts, saveNftDraft } from "./nft";
+import { ALLOWED_ARTWORK_TYPES, PAYMENT_TIERS, getNftDrafts, saveNftDraft } from "./nft";
 
 const nftAttributesSchema = z.array(
   z.object({
@@ -20,6 +20,7 @@ const nftDraftInput = z.object({
   description: z.string().trim().max(1_000).optional(),
   attributes: nftAttributesSchema,
   walletAddress: z.string().regex(/^0x[a-fA-F0-9]{40}$/).optional(),
+  paymentTier: z.enum(["standard", "curated", "staking_ready", "ecosystem", "protocol_partner"]),
 });
 
 export const appRouter = router({
