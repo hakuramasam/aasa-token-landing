@@ -3,7 +3,7 @@
  * Neo-pop editorial streetwear: carbon-black poster wall, AASA Volt accents,
  * large official avatar artwork, sharp printed rules, and evidence-led copy.
  */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ArrowDownRight,
   ArrowRight,
@@ -14,7 +14,7 @@ import {
   X,
 } from "lucide-react";
 
-const announcementUrl = "https://x.com/HakuramaSam/status/2091809146857205882";
+import { AASA_NFT, AASA_STAKING, AASA_TOKEN, ROBINHOOD_EXPLORER, claimAasa, connectRobinhoodWallet, getBrowserProvider, readAasaStatus } from "@/lib/aasaChain";\n\nconst announcementUrl = "https://x.com/HakuramaSam/status/2091809146857205882";
 const basedPadMarketUrl =
   "https://basedpad.fun/token/0xb2000000000000000000001582178DD38A037f83";
 const contractAddress = "0xb2000000000000000000001582178DD38A037f83";
@@ -77,9 +77,9 @@ function PixelMark({ light = false }: { light?: boolean }) {
 }
 
 export default function Home() {
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);\n  const [wallet, setWallet] = useState<string>("");\n  const [walletStatus, setWalletStatus] = useState<"idle" | "loading" | "ready" | "error">("idle");\n  const [walletError, setWalletError] = useState("");\n  const [aasaBalance, setAasaBalance] = useState("0");\n  const [nftBalance, setNftBalance] = useState("0");\n  const [claimable, setClaimable] = useState("0");\n  const [claiming, setClaiming] = useState(false);\n  const [claimTx, setClaimTx] = useState("");
 
-  const closeMenu = () => setMenuOpen(false);
+  const closeMenu = () => setMenuOpen(false);\n  const refreshWallet = async (address: string) => { const status = await readAasaStatus(address as `0x${string}`); setAasaBalance(status.tokenBalance); setNftBalance(status.nftBalance); setClaimable(status.claimable); };\n  const handleConnect = async () => { try { setWalletStatus("loading"); setWalletError(""); const address = await connectRobinhoodWallet(getBrowserProvider()); setWallet(address); await refreshWallet(address); setWalletStatus("ready"); } catch (error) { setWalletStatus("error"); setWalletError(error instanceof Error ? error.message : "Wallet connection failed."); } };\n  const handleClaim = async () => { const provider = getBrowserProvider(); if (!provider || !wallet || Number(claimable) <= 0) return; try { setClaiming(true); setWalletError(""); setClaimTx(""); const hash = await claimAasa(provider); setClaimTx(hash); await refreshWallet(wallet); } catch (error) { setWalletError(error instanceof Error ? error.message : "Claim transaction failed."); } finally { setClaiming(false); } };\n  useEffect(() => { const provider = getBrowserProvider(); if (!provider) return; provider.request({ method: "eth_accounts" }).then(async (accounts) => { const address = (accounts as string[])[0]; if (!address) return; try { setWallet(address); await refreshWallet(address); setWalletStatus("ready"); } catch {} }).catch(() => {}); }, []);
 
   return (
     <div className="aasa-site">
@@ -146,7 +146,7 @@ export default function Home() {
           <div className="hero-rail" aria-hidden="true">
             <span>AUTHORIZED AGENTIC SOCIAL AVATAR</span>
             <PixelMark light />
-            <span>BASE MAINNET · B20</span>
+            <span>ROBINHOOD CHAIN · 4663</span>
           </div>
 
           <div className="hero-inner">
@@ -180,7 +180,7 @@ export default function Home() {
                 <span className="headline-lime">ROUTED.</span>
               </h1>
               <p className="hero-lead">
-                <strong>$AASA</strong> is the Authorized Agentic Social Avatar — an upcoming Base-native
+                <strong>$AASA</strong> is the Authorized Agentic Social Avatar — an upcoming Robinhood Chain
                 B20 designed for the AI-owned NFT launchpad and ecosystem ahead.
               </p>
               <div className="hero-actions">
@@ -202,7 +202,7 @@ export default function Home() {
               <a className="hero-inline-source" href={announcementUrl} target="_blank" rel="noreferrer">
                 Read launch signal <ArrowUpRight size={14} />
               </a>
-              <div className="hero-facts">
+              <div className="wallet-rewards-panel" id="rewards">\n                <div className="wallet-panel-head"><div><Kicker>Authorized Avatar access</Kicker><h3>{wallet ? "WALLET VERIFIED" : "CONNECT TO VERIFY"}</h3></div>{walletStatus === "loading" ? <RefreshCw className="spin" size={18} /> : <Wallet size={20} />}</div>\n                <div className="wallet-address">{wallet || "No wallet connected"}</div>\n                <div className="wallet-metrics"><div><span>AASA BALANCE</span><strong>{aasaBalance}</strong></div><div><span>AASA NFTS</span><strong>{nftBalance}</strong></div><div><span>CLAIMABLE AASA</span><strong>{claimable}</strong></div></div>\n                <div className="wallet-eligibility">{wallet ? (Number(nftBalance) > 0 ? "✓ NFT holder — eligible for staking rewards" : "○ Connected — no AASA v2 NFT detected") : "Connect on Robinhood Chain 4663 to check eligibility."}</div>\n                <button className="button button--lime wallet-action" type="button" onClick={Number(claimable) > 0 ? handleClaim : handleConnect} disabled={claiming}>{claiming ? "Confirm in wallet…" : Number(claimable) > 0 ? "Claim AASA rewards" : wallet ? "Refresh eligibility" : "Connect Robinhood wallet"} <ArrowUpRight size={17} /></button>\n                {claimTx && <a className="wallet-tx" href={ROBINHOOD_EXPLORER + "/tx/" + claimTx} target="_blank" rel="noreferrer">Claim submitted · view transaction <ArrowUpRight size={14} /></a>}\n                {walletError && <p className="wallet-error">{walletError}</p>}\n              </div>\n\n              <div className="hero-facts">
                 <div>
                   <span>PAIR</span>
                   <strong>$AASA / META</strong>
@@ -253,7 +253,7 @@ export default function Home() {
               <span className="quote-source">PROJECT DESCRIPTION</span>
             </div>
             <div className="signal-checks">
-              <span><Check size={15} /> Base mainnet</span>
+              <span><Check size={15} /> Robinhood Chain</span>
               <span><Check size={15} /> B20 launch model</span>
               <span><Check size={15} /> META reward route</span>
             </div>
@@ -337,11 +337,11 @@ export default function Home() {
             </div>
             <div className="gateway-proof">
               <span className="gateway-proof-label">OFFICIAL B20 CONTRACT</span>
-              <a href={baseScanUrl} target="_blank" rel="noreferrer" className="contract-link">
+              <a href={explorerUrl} target="_blank" rel="noreferrer" className="contract-link">
                 <span>{contractAddress.slice(0, 10)}…{contractAddress.slice(-8)}</span>
                 <ArrowUpRight size={18} />
               </a>
-              <div className="gateway-check"><Check size={15} /> BaseScan contract view</div>
+              <div className="gateway-check"><Check size={15} /> Robinhood Chain contract view</div>
               <div className="gateway-check"><Check size={15} /> BasedPad $AASA / META route</div>
               <p>Verify the contract in your wallet before approving any transaction.</p>
             </div>
